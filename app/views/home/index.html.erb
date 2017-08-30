@@ -1,0 +1,58 @@
+<h2>Welcome to our website</h2>
+<!-- <p>Find me in app/views/home/index.html.erb</p> -->
+<!-- 
+<%= %> is embedded ruby tag inside html used for presentation
+<% %> is embedded ruby tag inside html used for evaluation
+-->
+2 + 2 : <%= 2 + 2 %> <!-- commenting in html -->
+<% names = ["ramesh", "suresh", "veeresh", "ganesh"] %>
+<ul> <!-- unordered list -->
+	<li>virat</li>
+	<li>Dhoni</li>
+</ul>
+
+<ol> <!-- ordered list -->
+	<li>Apple</li>
+	<li>Samsung</li>
+	<li>mi</li>
+</ol>
+
+<h3>Listing Names</h3>
+<ol>
+	<% names.each do |name| %>
+	<li><%= name.capitalize %></li>
+	<%end%>
+</ol>
+
+<% companies = [] %>
+<% if companies.empty? %>
+	<p> Companies not found </p>
+<% else %>
+	<h3> Listing companies</h3>
+	<ol>
+		<% companies.each do |company| %>
+			<li><%= company %></li>
+		<%end%>
+	</ol>
+<% end %>
+
+<a href="/home/about"> About</a>
+
+<%= link_to "About(ror)", home_about_path %>
+<!-- home_index_path returns a string "/home/index" -->
+<%= link_to "contact", home_contact_path %>
+
+<h2> Listing Categories </h2>
+<ol>
+<% @categories.each do |category| %>
+	<li><%= category.name %></li>
+<% end %>
+</ol>
+
+<h2> Listing Products </h2>
+<ol>
+<% @products.each do |product| %>
+	<li><%= product.name %></li>
+<% end %>
+</ol>
+ 

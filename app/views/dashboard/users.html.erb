@@ -1,0 +1,25 @@
+<h1>Dashboard users</h1>
+<%= render 'nav' %>
+<% user_orders = {} %>
+<% @users.each do |user| %>
+	<% if user.is_admin? %>
+		
+	<% else %>
+		<% user_orders[user.username] = Order.where('user_id = ?', user.id).length %>
+	<% end %>
+<% end %>
+
+<%= pie_chart(user_orders) %>
+<%= column_chart(user_orders) %>
+
+<h2>Revenue of users</h2>
+<% user_revenue = {} %>
+<% @users.each do |user| %>
+	<% if user.is_admin? %>
+
+	<% else %>
+		<% user_revenue[user.username] = Order.where('user_id = ?', user.id).pluck(:total).sum(:total) %>
+	<% end %>
+<% end %>
+<%= pie_chart(user_revenue) %>
+<%= column_chart(user_revenue) %>

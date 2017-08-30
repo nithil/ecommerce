@@ -1,0 +1,71 @@
+<h2><%= @product.name %></h2>
+<p>code - <%= @product.code %></p> 
+<p> Price - <%= @product.price %> </p>
+<p>	description - <%= @product.description %> </p>
+<p> category - <%= link_to @product.category.name, category_path(@product.category_id) %>
+	</p>
+<p>stock - <%= @product.stock %></p>
+<p>COD_availiability - <%= @product.COD_eligibility %></p>
+
+<% if user_signed_in? %>
+<%= form_for @cart_line_item do |f| %>
+	<%= f.label :quantity %>
+	<%= f.select :quantity, (1..10).to_a %> <br/>
+	<%= f.hidden_field :product_id, value: @product.id %>
+	<%= f.submit "Add to cart" %>
+	<% end %><br/>
+
+		<%= form_for @wishlist do |f| %>
+		<%= f.hidden_field :product_id, value: @product.id %>
+		<%= f.submit "Add to wishlist" %>
+		<% end %>
+
+<% else %>
+	<p><font color="red">login to add product to the cart</font></p>
+<% end %>
+
+<% avg_review = 0 %>
+	<% @product.reviews.each do |review| %>
+		<% avg_review += review.rating %>
+	<% end %>
+<h4>Average rating for this product is -<font color="green"> <%= avg_review.to_f/@product.reviews.length %></font></h4>
+
+<% if @product.reviews.empty? %>
+	<p><font color="red">No reviews for this product</font></p>
+<% else %>
+<ol>
+<h3>Listing reviews</h3>
+	<% @product.reviews.each do |review| %>
+	<li>by <font color="green"><%= review.user.username %></font> on <%= review.created_at %></li>
+	<p>Rating - <%= review.rating %></p>
+	<p>Review - <%= review.body %></p>	
+	<% if user_signed_in? && review.user_id == current_user.id || current_user.is_admin %>
+	<h4><%= link_to "edit review", edit_review_path(review.id) %></h4>
+	<h4><%= link_to "delete review", review_path(review.id), method: :delete, data: {confirm: "Are you sure?"}  %></h4>
+	<% end %>
+	<% end %>
+</ol>	
+<% end %><br/>
+
+<% if user_signed_in? %>
+<%= form_for @review do |f| %>
+	<%= f.label :rating %>
+	<%= f.select :rating, (1..5).to_a %><br/>
+	<%= f.label :body %>
+	<%= f.text_area :body %>
+	<%= f.hidden_field :product_id, value: @product.id %>
+	<%= f.submit "Add review" %>
+	<% end %>
+
+<%= link_to "List Products", products_path %>
+
+<% if user_signed_in? && current_user.is_admin %>
+<%= link_to "edit the product", edit_product_path(@product.id) %>
+
+<%= link_to "destroy the product", product_path(@product.id), method: :delete, data: {confirm: "Are you sure?"} %>
+<% end %>
+
+<% else %>
+	<p><font color="red" >login to add review</font></p>
+<% end %>
+

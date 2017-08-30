@@ -1,0 +1,27 @@
+<h2>Create address</h2>
+
+<%= form_for @address do |f| %>
+
+<% if @address.errors.any? %>
+		<h3> These errors prohibitted the form from being saved : </h3>
+		<ul>
+			<% @address.errors.full_messages.each do |msg| %>
+				<li><%= msg %></li>
+			<% end %>
+		</ul>
+	<% end %>
+	
+		<label>street : </label><br/>
+		<%= f.text_field :street %><br/><br/>
+
+		<label>city : </label><br/>
+		<%= f.text_field :city %><br/><br/>
+
+		<label>landmark : </label><br/>
+		<%= f.text_field :landmark %><br/><br/>
+
+		<label>pin : </label><br/>
+		<%= f.number_field :pin %><br/><br/>
+		<%= f.submit "Add address" %>
+
+<% end %>

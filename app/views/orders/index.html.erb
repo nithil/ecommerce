@@ -1,0 +1,14 @@
+<h2>Your orders (<%= @orders.length %>)</h2>
+
+
+<% @orders.each do |order| %>
+		<h3><%= order.order_number %>
+		<%= order.order_date %>
+		<%= order.total %></h3>
+		<ul>
+			<% order.order_line_items.each do |line_item| %>
+			<li><%= line_item.product.name %>- INR -<%= line_item.price %> - <%= line_item.quantity %> - <%= line_item.total %> - 
+			<%= order.address.street %>, <%= order.address.city %>, <%= order.address.pin %></li>
+			<% end %>
+		</ul>
+<% end %>

@@ -1,0 +1,11 @@
+<h2> Edit review </h2>
+
+<%= form_for @review do |f| %>
+
+	<%= f.label :rating %>
+	<%= f.select :rating, (1..5).to_a %><br/>
+	<%= f.label :body %>
+	<%= f.text_area :body %>
+	<%= f.submit "update review" %>
+
+<% end %>
