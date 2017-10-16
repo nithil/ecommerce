@@ -5,7 +5,7 @@
 	category.save
 end
 
-1000.times do
+100.times do
 	product = Product.new({"name" => Faker::Commerce.product_name, "price" => Faker::Commerce.price(10..1000), "description" => Faker::Lorem.sentence, "category_id" => Category.all.sample.id})
 	product.save
 end

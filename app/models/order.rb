@@ -9,7 +9,7 @@ class Order < ActiveRecord::Base
 	after_create :empty_cart_line_items
 	after_create :calculate_total
 	# after_create :confirmation
-
+	#binding.pry
 	def copy_cart_line_items_to_order_line_items
 		user = self.user
 		user.cart_line_items.each do |line_item|
@@ -25,6 +25,7 @@ class Order < ActiveRecord::Base
 
 	def empty_cart_line_items
 		user = self.user
+		#binding.pry
 		CartLineItem.delete(user.cart_line_items.pluck(:id))
 	end
 

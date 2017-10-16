@@ -23,7 +23,7 @@
 <% else %>
 	<p><font color="red">login to add product to the cart</font></p>
 <% end %>
-
+<%# binding.pry %>
 <% avg_review = 0 %>
 	<% @product.reviews.each do |review| %>
 		<% avg_review += review.rating %>

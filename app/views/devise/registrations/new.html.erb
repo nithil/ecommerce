@@ -3,19 +3,22 @@
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <%= devise_error_messages! %>
 
+
+  <div class="field">
+    <%= f.label :username %><br />
+    <%= f.text_field :username, autofocus: true, placeholder: "Enter the username"%>
+    <span id="usernameError"></span>
+  </div>
+
   <div class="field">
     <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, placeholder: "Enter the email" %>
+    <%= f.email_field :email, placeholder: "Enter the email" %>
+    <span id="emailError"></span>
   </div>
-
-    <div class="field">
-    <%= f.label :username %><br />
-    <%= f.text_field :username, placeholder: "Enter the username"%>
-  </div>
-
       <div class="field">
     <%= f.label :mobile %><br />
     <%= f.text_field :mobile, placeholder: "Enter the mobile number" %>
+    <span id="mobileError"></span>
   </div>
 
       <div class="field">
@@ -35,11 +38,13 @@
     <em>(<%= @minimum_password_length %> characters minimum)</em>
     <% end %><br />
     <%= f.password_field :password, autocomplete: "off" %>
+    <span id="passwordError"></span>
   </div>
 
   <div class="field">
     <%= f.label :password_confirmation %><br />
     <%= f.password_field :password_confirmation, autocomplete: "off" %>
+    <span id="passwordConfirmationError"></span>
   </div>
 
   <div class="actions">
@@ -48,3 +53,134 @@
 <% end %>
 
 <%= render "devise/shared/links" %>
+
+<script>
+  var alphabetFormatter = /^[A-Za-z]+$/;
+  var emailFormatter = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+  var mobileFormatter = /^[0-9]+$/;
+  var passwordFormatter = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
+
+  var usernameHandle = document.getElementById('user_username');
+  var emailHandle = document.getElementById('user_email');
+  var mobileHandle = document.getElementById('user_mobile');
+  var maleHandle = document.getElementById('user_gender_male');
+  var femaleHandle = document.getElementById('user_gender_female');
+  var passwordHandle = document.getElementById('user_password');
+  var passwordConfirmationHandle = document.getElementById('user_password_confirmation');
+
+  var usernameErrorHandle = document.getElementById('usernameError');
+  var emailErrorHandle = document.getElementById('emailError');
+  var mobileErrorHandle = document.getElementById('mobileError');
+  var passwordErrorHandle = document.getElementById('passwordError');
+  var passwordConfirmationErrorHandle = document.getElementById('passwordConfirmationError');
+
+  //AJAX function
+
+  function determineGender(name){
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://gender-api.com/get?name='+ name+'&key=pRPLCejozFwCHFbVCR', true);
+        xhr.onreadystatechange = function(){
+          if(xhr.readyState === 4 && xhr.status === 200){
+            result = JSON.parse(xhr.responseText);
+            if(result.gender === "male"){
+              maleHandle.checked = true;
+            } else if(result.gender === "female"){
+              femaleHandle.checked = true;
+            } else {
+              maleHandle.checked = false;
+              femaleHandle.checked = false;
+            }
+          }
+        };
+        xhr.send();
+  }
+  function checkEmailTaken(email){
+    var isTaken = false;
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '/ajax_calls/email_taken?email='+email, false);
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState === 4 && xhr.status === 200){
+        var response = JSON.parse(xhr.responseText);
+        if(response.user_taken){
+          isTaken = true;
+        }
+      }
+    }
+    xhr.send();
+    return isTaken;
+  }
+
+  function resetErrorMsg(errorField){
+    errorField.innerHTML = "";
+  }
+  usernameHandle.addEventListener('blur', function(){
+    if(usernameHandle.value == ""){
+      usernameErrorHandle.innerHTML = "Can't be blank";
+    } else if(!alphabetFormatter.test(usernameHandle.value)){
+      usernameErrorHandle.innerHTML = "Should only be alphabet";
+    } else if (usernameHandle.value.length < 3){
+     usernameErrorHandle.innerHTML = "Should contain min 6 characters"
+    } else {
+      resetErrorMsg(usernameErrorHandle);
+      determineGender(usernameHandle.value);
+    }
+  }, false);
+
+  emailHandle.addEventListener('blur', function(){
+    if(emailHandle.value == ""){
+      emailErrorHandle.innerHTML = "Can't be blank";
+    } else if(!emailFormatter.test(emailHandle.value)){
+      emailErrorHandle.innerHTML = "Should be a valid format";
+    } else if(checkEmailTaken(emailHandle.value)){
+      emailErrorHandle.innerHTML = "email already taken";
+    } else{
+      resetErrorMsg(emailErrorHandle);
+    }
+  }, false);
+
+  mobileHandle.addEventListener('blur', function(){
+    if(mobileHandle.value == ""){
+      mobileErrorHandle.innerHTML = "Can't be blank";
+    } else if(!mobileFormatter.test(mobileHandle.value)){
+      mobileErrorHandle.innerHTML = "Should be number";
+    } else if(mobileHandle.value.length != 10){
+      mobileErrorHandle.innerHTML = "Should be 10 digits";
+    } else{
+      resetErrorMsg(mobileErrorHandle);
+    }
+  },false);
+
+  passwordHandle.addEventListener('blur', function(){
+    if(passwordHandle.value == ""){
+      passwordErrorHandle.innerHTML = "Can't be blank";
+    } else if(passwordHandle.value.length < 6){
+      passwordErrorHandle.innerHTML = "Should be min 6 characters";
+    } else if(!passwordFormatter.test(passwordHandle.value)){
+      passwordErrorHandle.innerHTML = "Ensure you have 1 uppercase, 1 lowercase, & 1 number";
+    } else {
+      resetErrorMsg(passwordErrorHandle);
+    }
+  },false);
+
+  passwordHandle.addEventListener('mouseover', function(){
+    passwordHandle.type = "text";
+  },false);
+
+  passwordHandle.addEventListener('mouseout', function(){
+    passwordHandle.type = "password";
+  },false);
+
+  passwordConfirmationHandle.addEventListener('blur', function(){
+    if(passwordConfirmationHandle.value == ""){
+      passwordConfirmationErrorHandle.innerHTML = "Can't be blank";
+    } else if(passwordHandle.value != passwordConfirmationHandle.value){
+      passwordConfirmationErrorHandle.innerHTML = "password doesn't match";
+    } else{
+      resetErrorMsg(passwordConfirmationErrorHandle);
+    }
+  },false);
+
+  usernameHandle.addEventListener('focus', function(){
+    usernameErrorHandle.innerHTML = "enter the your name";
+  },false);
+</script>

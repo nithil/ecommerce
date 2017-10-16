@@ -2,11 +2,13 @@
 <html>
 <head>
   <title>Ecommerce</title>
+
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
 
   <%= javascript_include_tag "https://www.gstatic.com/charts/loader.js" %>
 
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -21,12 +23,12 @@
 		<%= link_to "product list", products_path %> |
 		<%= link_to "Your address", addresses_path %> |
 		<% if current_user.is_admin %>
-			<%= link_to "Dashboard", dashboard_home_path %>
+			<%= link_to "Dashboard", dashboard_home_path %><hr>
 		<% end %>
 	<% else %>
 		<%= link_to "Login", new_user_session_path %> | <%= link_to "Register", new_user_registration_path %>
 	<% end %>
- <p class="notice"><%= notice %></p>
+ <p id="notice"><%= notice %></p>
  <p class="alert"><%= alert %></p>
 <%= yield %>
 

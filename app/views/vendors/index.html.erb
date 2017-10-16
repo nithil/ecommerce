@@ -1,0 +1,9 @@
+<h2>Listing Vendors (<span id="count"><%= @vendors.count %></span>)</h2>
+<%# binding.pry %>
+<div id="vendorTable">
+  <%= render 'table' %>
+</div>
+
+<h2>Add Vendor</h2>
+<span id="errors"></span>
+<%= render 'form' %>

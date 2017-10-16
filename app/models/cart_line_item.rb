@@ -18,5 +18,4 @@ class CartLineItem < ActiveRecord::Base
 			line_item.update_attributes(quantity: line_item.quantity + self.quantity)
 		end
 	end
-
 end
