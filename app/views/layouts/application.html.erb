@@ -20,7 +20,7 @@
 		<%= link_to "order", orders_path %> | 
 		<%= link_to "Logout", destroy_user_session_path, method: :delete %><hr>
 		<%= link_to "category list", categories_path %> |
-		<%= link_to "product list", products_path %> |
+		<%= link_to "product list", products_path, :"data-no-turbolink" => true %> |
 		<%= link_to "Your address", addresses_path %> |
 		<% if current_user.is_admin %>
 			<%= link_to "Dashboard", dashboard_home_path %><hr>

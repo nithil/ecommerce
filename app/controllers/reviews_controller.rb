@@ -6,11 +6,16 @@ class ReviewsController < ApplicationController
 	def create
 		@review = Review.new(params[:review].permit(:rating, :body, :product_id, :user_id))
 		@review.user_id = current_user.id
-		if @review.save
-			Notification.review_confirmation(@review).deliver!
-			redirect_to :back, notice: "-----Successfully added a review------"
-		else
-			redirect_to :back, notice: "-----review body can't be blank-----"
+
+		respond_to do |format|
+			if @review.save
+				# Notification.review_confirmation(@review).deliver!
+				format.html {redirect_to :back, notice: "-----Successfully added a review------"}
+				format.js
+			else
+				format.html {redirect_to :back, notice: "-----review body can't be blank-----"}
+				format.js
+			end
 		end
 	end
 
@@ -30,6 +35,9 @@ class ReviewsController < ApplicationController
 	def destroy
 		@review = Review.find(params[:id])
 		@review.destroy
-		redirect_to product_path(@review.product_id), notice: "-----Successfully deleted the review-----"
+		respond_to do |format|
+			format.html {redirect_to product_path(@review.product_id), notice: "-----Successfully deleted the review-----"}
+			format.js
+		end
 	end
 end

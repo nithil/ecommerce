@@ -3,13 +3,17 @@
 <% end %>
 <button id="reset">reset</button><br>
 <p>Price</p>
-<input type="radio" id="lt250"> (<250)
-<input type="radio" id="bw250&750"> (250 - 750)
-<input type="radio" id="bw750&1000"> (750 - 1000)
-<input type="radio" id="1000+"> (1000+)
+<!-- min<input type="text" id="start">
+max<input type="text" id="end"> -->
 
+<div id="slider">
+    <output id="rangevalue1">1</output>
+    <input class="bar" type="range" id="start" min="1" max="500" value="1" onchange="rangevalue1.value=value"/>500
+    <input class="bar" type="range" id="end" min="500" max="1000" value="1000" onchange="rangevalue2.value=value"/>
+    <output id="rangevalue2">1000</output>
+</div>
 
-<h2><font color="blue"> Listing Products</font></h2>
+<h2><font color="blue"> Listing Products (<span id="count"></span>)</font></h2>
 <% if @products.empty? %>
 	<p>No products found</p>
 <% else %>	
@@ -35,13 +39,32 @@
 <script>
 	var ids = [];
 	var checkedNums = [];
+	var start_rate = 1;
+	var end_rate = 1000;
 	tableHandle = document.getElementById('table');
 	bodyHandle = document.getElementById('body');
 	resetHandle = document.getElementById('reset');
+	startHandle = document.getElementById('start');
+	endHandle = document.getElementById('end');
+	sliderHandle = document.getElementById('slider');
+	countHandle =  document.getElementById('count');
 
 	window.addEventListener('load',function(){
 		call(ids);
 	},false);
+
+	// endHandle.addEventListener('blur',function(){
+	// 	console.log(startHandle.value);
+
+	// 	start_rate = (startHandle.value);
+	// 	end_rate = (endHandle.value);
+	// 	call(ids)
+	// },false);
+	sliderHandle.addEventListener('change', function(){
+		start_rate = startHandle.value;
+		end_rate = endHandle.value;
+		call(ids);
+	}, false);
 
 	function math(id,check){
 		console.log(ids)
@@ -58,11 +81,12 @@
 	function call(ids){
 		var number = 1;
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', 'http://localhost:3000/products?category_id='+ids, true);
+		xhr.open('GET', 'http://localhost:3000/products?category_id='+ids+'&start_rate='+start_rate+'&end_rate='+end_rate, true);
 		xhr.onreadystatechange = function(){
 			if(xhr.readyState === 4 && xhr.status === 200){
 				var response = JSON.parse(xhr.responseText);
 				bodyHandle.innerHTML = "";
+				countHandle.innerHTML = response.length
 				response.forEach(function(n){
 					var row = table.insertRow(-1);
     				var cell1 = row.insertCell(0);
