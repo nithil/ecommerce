@@ -18,10 +18,13 @@ class CartLineItemsController < ApplicationController
 	end
 
 	def index
+		# binding.pry
+		# @cart_line_items = current_user.cart_line_items
 		@cart_line_items = current_user.cart_line_items
 		@wishlist = Wishlist.new
 		@order = Order.new
 		@address = Address.new
+		# binding.pry
 	end
 
 	def destroy

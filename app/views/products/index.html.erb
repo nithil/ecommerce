@@ -27,7 +27,14 @@ max<input type="text" id="end"> -->
 		</tr>
 	</thead>
 		<tbody id="body">
-			
+			<%# @products.each.with_index do |product,index| %>
+			<!-- <tr>
+				<td><%#= index %></td>
+				<td><%#= product.name %></td>
+				<td><%#= product.price %></td>
+				<td><%#= product.category_id %></td>
+			</tr> -->
+			<%# end %>
 		</tbody>
 </table>
 <% end %>
@@ -40,7 +47,9 @@ max<input type="text" id="end"> -->
 	var ids = [];
 	var checkedNums = [];
 	var start_rate = 1;
+	var number = 1;
 	var end_rate = 1000;
+	var offset = 50;
 	tableHandle = document.getElementById('table');
 	bodyHandle = document.getElementById('body');
 	resetHandle = document.getElementById('reset');
@@ -61,32 +70,39 @@ max<input type="text" id="end"> -->
 	// 	call(ids)
 	// },false);
 	sliderHandle.addEventListener('change', function(){
+		offset=0;
 		start_rate = startHandle.value;
 		end_rate = endHandle.value;
+		bodyHandle.innerHTML = "";
+		number = 1;
 		call(ids);
 	}, false);
 
 	function math(id,check){
-		console.log(ids)
+		bodyHandle.innerHTML = "";
+		number = 1;
 		if(check.checked){
 			ids.push(id);
-			call(ids);
 			checkedNums.push(check);
+			offset=0;
+			call(ids);
+
 		}else{
 			ids.splice(ids.indexOf(id),1);
+			offset=0;
 			call(ids);
 		};
+		console.log(ids)
 	};
 
 	function call(ids){
-		var number = 1;
+
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', 'http://localhost:3000/products?category_id='+ids+'&start_rate='+start_rate+'&end_rate='+end_rate, true);
+		xhr.open('GET', 'http://localhost:3000/products?category_id='+ids+'&start_rate='+start_rate+'&end_rate='+end_rate+'&offset='+offset, false);
 		xhr.onreadystatechange = function(){
 			if(xhr.readyState === 4 && xhr.status === 200){
 				var response = JSON.parse(xhr.responseText);
-				bodyHandle.innerHTML = "";
-				countHandle.innerHTML = response.length
+				 // bodyHandle.innerHTML = "";
 				response.forEach(function(n){
 					var row = table.insertRow(-1);
     				var cell1 = row.insertCell(0);
@@ -94,12 +110,15 @@ max<input type="text" id="end"> -->
     				var cell3 = row.insertCell(2);
     				var cell4 = row.insertCell(3)
     				cell1.innerHTML = number++;
-					cell2.innerHTML = n.name;
+					cell2.innerHTML = `<a href="/products/${n.id}">${n.name}</a>`;
 					cell3.innerHTML = n.price;
 					cell4.innerHTML = n.category_name;
 					bodyHandle.appendChild(row);
+					offset++;	
 				});
+				countHandle.innerHTML = number-1;
 			};
+
 		};
 		xhr.send();
 	};
@@ -109,7 +128,43 @@ max<input type="text" id="end"> -->
 			n.checked = false;
 		})
 		ids = [];
+		offset = 0;
+		number = 1;
+		bodyHandle.innerHTML = "";
 		call(ids);
 	},false);
 
+	 $(document).ready(function(){
+		$(window).on('scroll', function(){
+			if($(window).scrollTop() > $(document).height() - $(window).height() - 100){
+				console.log($(window).scrollTop() > $(document).height() - $(window).height() - 100)
+				call(ids)
+	
+				// var output = "";
+				// var xhr = new XMLHttpRequest();
+				
+				// xhr.open('GET', 'http://localhost:3000/products.json?offset=' + offset, false);
+				// xhr.onreadystatechange = function(){
+				// 	if(xhr.readyState === 4 && xhr.status === 200){
+				// 		var products = JSON.parse(xhr.responseText);
+				// 		products.forEach(function(n){
+				// 			var row = table.insertRow(-1);
+		  //   				var cell1 = row.insertCell(0);
+		  //   				var cell2 = row.insertCell(1);
+		  //   				var cell3 = row.insertCell(2);
+		  //   				var cell4 = row.insertCell(3)
+		  //   				cell1.innerHTML = number++;
+				// 			cell2.innerHTML = `<a href="/products/${n.id}">${n.name}</a>`;
+				// 			cell3.innerHTML = n.price;
+				// 			cell4.innerHTML = n.category_name;
+				// 			bodyHandle.appendChild(row);
+				// 			offset++;
+				// 		});
+				// 		// bodyHandle.append(output);
+				// 	}
+				// }
+				// xhr.send();
+			}
+		});
+	 });
 </script>

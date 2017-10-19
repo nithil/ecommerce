@@ -1,6 +1,6 @@
 <h2>Your cart</h2>
 
-<% if current_user.cart_line_items.empty? %>
+<% if @cart_line_items.empty? %>
 	<b>Your shopping cart is empty.<br/> Continue shopping <%= link_to "here", products_path %></b>
 <% else %>
 <table border="1">
@@ -22,19 +22,17 @@
 			<td><%= line_item.product.name %></td>
 			<td><%= line_item.product.price %></td>
 			<td>
-				<%= form_for line_item do |f| %>
-					<%= f.select :quantity, (1..10).to_a %>
-					<%= f.submit "Update" %>
+				<%= form_for(line_item, remote: true) do |f| %>
+					<%= f.select :quantity, (1..10).to_a, class: "quantity" %>
 				<% end %>
 			</td>
 			<td><%= total = line_item.product.price * line_item.quantity %></td>
 			<% cart_total += total %>
-			<td><%= link_to "remove", cart_line_item_path(line_item.id), method: :delete, data: {confirm: "Are you sure?"} %>
-
-				<%= form_for @wishlist do |f| %>
+			<td><%= form_for @wishlist do |f| %>
 					<%= f.hidden_field :product_id, value: line_item.product_id %>
 					<%= f.submit "save for later" %>
 				<% end %>
+				<%= link_to "remove", cart_line_item_path(line_item.id), method: :delete, data: {confirm: "Are you sure?"} %>			
 			</td>
 		</tr>
 		<% end %>
@@ -46,9 +44,19 @@
 
 
 
-<%= form_for @order do |f| %>
-	<label>Address : </label><br/>
-	<%= f.collection_select :address_id, current_user.addresses, :id, :street, prompt: "Select Address" %><br/>
-	<%= f.submit "checkout" %>
+<%#= form_for @order do |f| %>
+<!-- 	<label>Address : </label><br/>
+ -->	<%#= f.collection_select :address_id, current_user.addresses, :id, :street, prompt: "Select Address" %><!-- <br/> -->
+	<%#= f.submit "checkout" %>
+<%# end %>
 <% end %>
-<% end %>
+
+<script>
+	cartHandle = document.getElementsByClassName('edit_cart_line_item')[0];
+
+	cartHandle.addEventListener('change', function(){
+		a = cartHandle['cart_line_item_quantity'].value;
+		id = cartHandle['id'].slice(-1);
+	}, false);
+
+</script>

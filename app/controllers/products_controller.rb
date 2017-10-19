@@ -49,18 +49,24 @@ class ProductsController < ApplicationController
 before_action :authenticate_user!, except: [:index, :show]
 before_action :check_is_admin, except: [:index, :show]
 	def index
+		# sleep(2)
+		 # binding.pry
 		if params[:category_id] == ""
-			# binding.pry
-			@products = Product.where(price: params["start_rate"]..params["end_rate"])
+		 	# binding.pry
+			@products = Product.where(price: params["start_rate"]..params["end_rate"]).offset(params[:offset]).limit(50)
 			render json: @products.map{|p| p.attributes.merge({category_name: p.category.name})};
 		elsif params[:category_id]
 			# binding.pry
-			@products = Product.where(price: params["start_rate"]..params["end_rate"]).where(category_id: params[:category_id].split(","))
+			@products = Product.where(price: params["start_rate"]..params["end_rate"]).where(category_id: params[:category_id].split(",")).offset(params[:offset]).limit(50)
 			render json: @products.map{|p| p.attributes.merge({category_name: p.category.name})};
 		else
-			@products = Product.all# render json: @products
+			@products = Product.all
 		end
-			# binding.pry		
+		 # binding.pry
+		# respond_to do |format|
+		# 	format.html 
+		# 	format.json {render json: @products}
+		# end
 	end
 
 	def new
