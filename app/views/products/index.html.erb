@@ -1,47 +1,100 @@
-<% Category.all.each do |category| %>
-	<input type="checkbox" value=<%= category.id %> id="i<%= category.id %>" onchange="math(<%= category.id %>,i<%= category.id %>)"><%= category.name %>
-<% end %>
-<button id="reset">reset</button><br>
-<p>Price</p>
-<!-- min<input type="text" id="start">
-max<input type="text" id="end"> -->
+<div class="col-md-3">
+                <p class="lead">Category</p>
+                <div class="list-group">
+                	<% Category.all.each do |category| %>
+                		<%= link_to category.name, category, class: "list-group-item" %>
+                	<% end %>                    
+                </div>
+                <div class="checkbox">
+                <% Category.all.each do |category| %>
+                <!-- <label> -->
+                    <input type="checkbox" value=<%= category.id %> id="i<%= category.id %>" onchange="math(<%= category.id %>,i<%= category.id %>)"><%= category.name %><br>
+                <!-- </label> -->
+                    
+                <% end %>
+                </div>
+                <button id="reset">reset</button><br>
+                <p>Price</p>
+                    <div id="slider">
+                        <output id="rangevalue1">1</output>
+                        <input class="bar" type="range" id="start" min="1" max="500" value="1" onchange="rangevalue1.value=value"/>500
+                        <input class="bar" type="range" id="end" min="500" max="1000" value="1000" onchange="rangevalue2.value=value"/>
+                        <output id="rangevalue2">1000</output>
+                    </div>
+            </div>
 
-<div id="slider">
-    <output id="rangevalue1">1</output>
-    <input class="bar" type="range" id="start" min="1" max="500" value="1" onchange="rangevalue1.value=value"/>500
-    <input class="bar" type="range" id="end" min="500" max="1000" value="1000" onchange="rangevalue2.value=value"/>
-    <output id="rangevalue2">1000</output>
-</div>
+            <div class="col-md-9">
 
-<h2><font color="blue"> Listing Products (<span id="count"></span>)</font></h2>
-<% if @products.empty? %>
-	<p>No products found</p>
-<% else %>	
-	<table border="1" id="table">
-	<thead>
-		<tr>
-			<th>#</th>
-			<th>Name</th>
-			<th>Price</th>
-			<th>Category</th>
-		</tr>
-	</thead>
-		<tbody id="body">
-			<%# @products.each.with_index do |product,index| %>
-			<!-- <tr>
-				<td><%#= index %></td>
-				<td><%#= product.name %></td>
-				<td><%#= product.price %></td>
-				<td><%#= product.category_id %></td>
-			</tr> -->
-			<%# end %>
-		</tbody>
-</table>
-<% end %>
+                <div class="row carousel-holder">
+
+                    <div class="col-md-12">
+                        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                            <ol class="carousel-indicators">
+                                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                            </ol>
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <img class="slide-image" src="../earphones.jpg" alt="">
+                                </div>
+                                <div class="item">
+                                    <img class="slide-image" src="../vogue.jpg" alt="">
+                                </div>
+                                <div class="item">
+                                    <img class="slide-image" src="../movies.jpg" alt="">
+                                </div>
+                            </div>
+                            <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+                                <span class="glyphicon glyphicon-chevron-left"></span>
+                            </a>
+                            <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row" id="productList">
+                
+                </div>
+
+            </div>
+
+
+
 
 <% if user_signed_in? && current_user.is_admin %>
 	<h2><%= link_to "Add Product", new_product_path %></h2>
 <% end %>
+
+
+<script type="text/template" id="productsTemplate">
+  {{#products}}
+   <div class="col-sm-4 col-lg-4 col-md-4">
+                        <div class="thumbnail">
+                            <img src="http://placehold.it/320x150" alt="">
+                            <div class="caption">
+                                <h4 class="pull-right">${{price}}</h4>
+                                <h4>{{name}}</h4>
+                                <h3>{{category_id}}</h3>
+                                <p>{{description}}</p>
+                            </div>
+                            <div class="ratings">
+                                <p class="pull-right">10</p>
+                                <p>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                    <span class="glyphicon glyphicon-star"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+  {{/products}}
+</script>
 
 <script>
 	var ids = [];
@@ -75,6 +128,8 @@ max<input type="text" id="end"> -->
 		end_rate = endHandle.value;
 		bodyHandle.innerHTML = "";
 		number = 1;
+		$('#productList').empty();
+		$('#spinner').show();
 		call(ids);
 	}, false);
 
@@ -84,10 +139,14 @@ max<input type="text" id="end"> -->
 		number = 1;
 		if(check.checked){
 			ids.push(id);
-			checkedNums.push(check);			
+			checkedNums.push(check);
+			$('#productList').empty();
+			$('#spinner').show();			
 			call(ids);
 		}else{
 			ids.splice(ids.indexOf(id),1);
+			$('#productList').empty();
+			$('#spinner').show();
 			call(ids);
 		};
 		console.log(ids)
@@ -95,26 +154,17 @@ max<input type="text" id="end"> -->
 
 	function call(ids){
 
+		var template = $('#productsTemplate').html();
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', 'http://localhost:3000/products?category_id='+ids+'&start_rate='+start_rate+'&end_rate='+end_rate+'&offset='+offset, false);
 		xhr.onreadystatechange = function(){
+			$('#spinner').hide();
 			if(xhr.readyState === 4 && xhr.status === 200){
-				var response = JSON.parse(xhr.responseText);
-				 // bodyHandle.innerHTML = "";
-				response.forEach(function(n){
-					var row = table.insertRow(-1);
-    				var cell1 = row.insertCell(0);
-    				var cell2 = row.insertCell(1);
-    				var cell3 = row.insertCell(2);
-    				var cell4 = row.insertCell(3)
-    				cell1.innerHTML = number++;
-					cell2.innerHTML = `<a href="/products/${n.id}">${n.name}</a>`;
-					cell3.innerHTML = n.price;
-					cell4.innerHTML = n.category_name;
-					bodyHandle.appendChild(row);
-					offset++;	
-				});
-				countHandle.innerHTML = number-1;
+				$('#spinner').show();
+				var products = JSON.parse(xhr.responseText);
+          		var newHtml = Mustache.to_html(template, products);
+          		$('#productList').append(newHtml);
+          		offset +=50;
 			};
 
 		};
@@ -129,6 +179,7 @@ max<input type="text" id="end"> -->
 		offset = 0;
 		number = 1;
 		bodyHandle.innerHTML = "";
+		$('#productList').empty();
 		call(ids);
 	},false);
 

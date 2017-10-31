@@ -8,29 +8,104 @@
   <%= javascript_include_tag "https://www.gstatic.com/charts/loader.js" %>
 
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  
+  <link rel="icon" type="image/png" href="/wow1.png"/>
+
   <%= csrf_meta_tags %>
+  
+  <style>
+        .loader {
+          border: 16px solid #f3f3f3;
+          border-radius: 50%;
+          border-top: 16px solid #3498db;
+          width: 120px;
+          height: 120px;
+          position: fixed;
+            top: 50%;
+            left: 50%
+          -webkit-animation: spin 2s linear infinite;
+          animation: spin 2s linear infinite;
+        }
+
+        @-webkit-keyframes spin {
+          0% { -webkit-transform: rotate(0deg); }
+          100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+</style>
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../css/shop-homepage.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+
 </head>
 <body>
-	<% if user_signed_in? %>
-		<%= current_user.username %> |
-		<%= link_to "Account settings", edit_user_registration_path %> |
-		<%= link_to "cart", cart_line_items_path %> (<%= CartLineItem.where('user_id = ?', current_user.id).length %>) |
-		<%= link_to "wishlist", wishlists_path %> (<%= Wishlist.where('user_id = ?', current_user.id).length %>) |
-		<%= link_to "order", orders_path %> | 
-		<%= link_to "Logout", destroy_user_session_path, method: :delete %><hr>
-		<%= link_to "category list", categories_path %> |
-		<%= link_to "product list", products_path, :"data-turbolinks" => false %> |
-		<%= link_to "Your address", addresses_path %> |
-		<% if current_user.is_admin %>
-			<%= link_to "Dashboard", dashboard_home_path %><hr>
-		<% end %>
-	<% else %>
-		<%= link_to "Login", new_user_session_path %> | <%= link_to "Register", new_user_registration_path %>
-	<% end %>
- <p id="notice"><%= notice %></p>
- <p class="alert"><%= alert %></p>
-<%= yield %>
+    
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Start Bootstrap</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#">About</a>
+                    </li>
+                    <li>
+                        <a href="#">Services</a>
+                    </li>
+                    <li>
+                        <a href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
 
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+            <%= yield %>
+
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+    <div class="container">
+
+        <hr>
+
+        <!-- Footer -->
+        <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>Copyright &copy; eCommerce 2018</p>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+    <!-- /.container -->
+
+    <!-- jQuery -->
+<!--     <script src="js/jquery.js"></script>
+ -->
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../../js/bootstrap.min.js"></script>
+<!-- <div class="loader" id="spinner"></div> -->
 </body>
 </html>

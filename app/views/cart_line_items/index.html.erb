@@ -44,14 +44,14 @@
 
 
 
-<%#= form_for @order do |f| %>
-<!-- 	<label>Address : </label><br/>
- -->	<%#= f.collection_select :address_id, current_user.addresses, :id, :street, prompt: "Select Address" %><!-- <br/> -->
-	<%#= f.submit "checkout" %>
-<%# end %>
+<%= form_for @order do |f| %>
+	<label>Address : </label><br/>
+	<%= f.collection_select :address_id, current_user.addresses, :id, :street, prompt: "Select Address" %><!-- <br/> -->
+	<%= f.submit "checkout" %>
+<% end %>
 <% end %>
 
-<script>
+<!-- <script>
 	cartHandle = document.getElementsByClassName('edit_cart_line_item')[0];
 
 	cartHandle.addEventListener('change', function(){
@@ -59,4 +59,4 @@
 		id = cartHandle['id'].slice(-1);
 	}, false);
 
-</script>
+</script> -->

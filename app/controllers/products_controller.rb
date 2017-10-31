@@ -52,15 +52,16 @@ before_action :check_is_admin, except: [:index, :show]
 		# sleep(2)
 		 # binding.pry
 		if params[:category_id] == ""
-		 	# binding.pry
+		 	 # binding.pry
+		 	 # sleep(2);
 			@products = Product.where(price: params["start_rate"]..params["end_rate"]).offset(params[:offset]).limit(50)
-			render json: @products.map{|p| p.attributes.merge({category_name: p.category.name})};
+			render json: {products: @products.map{|p| p.attributes.merge({category_name: p.category.name})}}
 		elsif params[:category_id]
 			# binding.pry
 			@products = Product.where(price: params["start_rate"]..params["end_rate"]).where(category_id: params[:category_id].split(",")).offset(params[:offset]).limit(50)
-			render json: @products.map{|p| p.attributes.merge({category_name: p.category.name})};
+			render json: {products: @products.map{|p| p.attributes.merge({category_name: p.category.name})}}
 		else
-			@products = Product.all
+			@products = Product.limit(50)
 		end
 		 # binding.pry
 		# respond_to do |format|
