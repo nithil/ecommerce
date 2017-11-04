@@ -69,7 +69,6 @@
 	<h2><%= link_to "Add Product", new_product_path %></h2>
 <% end %>
 
-
 <script type="text/template" id="productsTemplate">
   {{#products}}
    <div class="col-sm-4 col-lg-4 col-md-4">
@@ -77,8 +76,8 @@
                             <img src="http://placehold.it/320x150" alt="">
                             <div class="caption">
                                 <h4 class="pull-right">${{price}}</h4>
-                                <h4>{{name}}</h4>
-                                <h3>{{category_id}}</h3>
+                                <h4><a href="/products/{{id}}">{{name}}</a></h4>
+                                <h6><a href="/categories/{{category_id}}">{{category_name}}</a></h6>
                                 <p>{{description}}</p>
                             </div>
                             <div class="ratings">
@@ -126,7 +125,7 @@
 		offset = 0;
 		start_rate = startHandle.value;
 		end_rate = endHandle.value;
-		bodyHandle.innerHTML = "";
+		// bodyHandle.innerHTML = "";
 		number = 1;
 		$('#productList').empty();
 		$('#spinner').show();
@@ -134,7 +133,7 @@
 	}, false);
 
 	function math(id,check){
-		bodyHandle.innerHTML = "";
+		// bodyHandle.innerHTML = "";
 		offset = 0;
 		number = 1;
 		if(check.checked){

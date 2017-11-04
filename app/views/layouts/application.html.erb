@@ -53,22 +53,38 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Start Bootstrap</a>
+                <a class="navbar-brand" >eCommerce</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#">About</a>
+                        <a href="/categories">Categories</a>
                     </li>
                     <li>
-                        <a href="#">Services</a>
+                        <a href="/products">Products</a>
                     </li>
-                    <li>
+                    <!-- <li>
                         <a href="#">Contact</a>
-                    </li>
+                    </li> -->
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                  <% if user_signed_in? %>
+
+                    <li><%= link_to edit_user_registration_path, class: "btn btn-secondary" do %>
+                         <i class="glyphicon glyphicon-user"></i><span> <%= current_user.username %></span>
+                      <% end %>
+                    </li> 
+                    <li><%= link_to destroy_user_session_path, method: :delete, class: "btn btn-secondary" do %>
+                          <i class="glyphicon glyphicon-log-out"></i>
+                    <% end %></li>
+                  <% else %>
+                       <li><%= link_to "Login", new_user_session_path %></li> 
+                       <li><%= link_to "Register", new_user_registration_path %></li>
+                  <% end %>       
                 </ul>
             </div>
+
             <!-- /.navbar-collapse -->
         </div>
         <!-- /.container -->

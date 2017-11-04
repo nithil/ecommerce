@@ -1,5 +1,5 @@
 <div class="thumbnail">
-                    <img class="img-responsive" src="http://placehold.it/800x300" alt="">
+                    <img class="img-responsive" src="http://placehold.it/400x100" alt="">
                     <div class="caption-full">
                         <h4 class="pull-right">$<%= @product.price %></h4>
                         <h4><%= @product.name %>
@@ -17,22 +17,64 @@
                             4.0 stars
                         </p>
                     </div>
+                    <% if user_signed_in? %>
+                        <%= form_for @cart_line_item do |f| %>
+                        <%= f.label :quantity %>
+                        <div class="dropdown">
+                            <%= f.select :quantity, (1..10).to_a %>
+                        </div>
+                        <%= f.hidden_field :product_id, value: @product.id %>
+                        <br><%= f.submit "Add to cart", class: "btn btn-success" %>
+                        <% end %>
+
+                            <%= form_for @wishlist do |f| %>
+                            <%= f.hidden_field :product_id, value: @product.id %>
+                            <%= f.submit "Add to wishlist",class: "btn btn-warning " %>
+                            <% end %>
+
+                    <% else %>
+                        <p><font color="red">login to add product to the cart</font></p>
+                    <% end %>
                 </div>
 
                 <div class="well">
 
-                    <div class="text-right">
+                   <!--  <div class="text-right">
                         <a class="btn btn-success">Leave a Review</a>
-                    </div>
+                    </div> -->
+
+
+<!-- Button trigger modal -->
+<div class="text-right">
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#reviewModal">Leave a review
+    </button>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Review</h4>
+      </div>
+      <div class="modal-body">
+        <div id="errorMsg"></div>
+            <%= render '/reviews/form' %>
+      </div>
+    </div>
+  </div>
+</div>
 
                     <hr>
 
                     <div class="row">
                         <div class="col-md-12">
-                            <% @product.reviews.each do |review| %>
-                                <span class="pull-right"><%= review.created_at.strftime('%a, %b %d %Y') %></span>
-                            <p><%= review.body %></p>
-                            <% end %>
+                            <ul id="reviewList">
+                                <% @product.reviews.each do |review| %>
+                                    <span class="pull-right"><%= review.created_at.strftime('%a, %b %d %Y') %></span>
+                                <p><%= review.body %></p>
+                                <% end %>
+                             </ul>
                             <span class="glyphicon glyphicon-star"></span>
                             <span class="glyphicon glyphicon-star"></span>
                             <span class="glyphicon glyphicon-star"></span>
@@ -47,22 +89,7 @@
                 </div>
 
 
-<% if user_signed_in? %>
-<%= form_for @cart_line_item do |f| %>
-	<%= f.label :quantity %>
-	<%= f.select :quantity, (1..10).to_a %> <br/>
-	<%= f.hidden_field :product_id, value: @product.id %>
-	<%= f.submit "Add to cart" %>
-	<% end %><br/>
 
-		<%= form_for @wishlist do |f| %>
-		<%= f.hidden_field :product_id, value: @product.id %>
-		<%= f.submit "Add to wishlist" %>
-		<% end %>
-
-<% else %>
-	<p><font color="red">login to add product to the cart</font></p>
-<% end %>
 <%# binding.pry %>
 <% avg_review = 0 %>
 	<% @product.reviews.each do |review| %>
@@ -72,18 +99,7 @@
 
 
 
-<h3>Listing reviews</h3>
-	<ul id="reviewList">
-		<% @product.reviews.each do |review| %>
-			<li id="rd_<%= review.id %>"><%= review.body %><%= link_to "delete review", review_path(review.id), method: :delete, data: {confirm: "Are you sure?", remote: true} %></li>
-		<% end %>
-	</ul>
-	
 
-
-<%# if user_signed_in? %>
-	<div id="errorMsg"></div>
-	<%= render '/reviews/form' %>
 	<%= link_to "List Products", products_path %>
 
 <% if user_signed_in? && current_user.is_admin %>

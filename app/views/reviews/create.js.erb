@@ -4,5 +4,6 @@
 <% else %>
 	$('#errorMsg').hide();
 	$('#new_review')[0].reset();
+	$('#reviewModal').modal('hide');
 	$('#reviewList').append("<%= escape_javascript render 'review' %>");
 <% end %>
